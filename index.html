@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Punts d'interès</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
+    <link rel="stylesheet" href="./style/index.css" />
+</head>
+<body>
+    <div class="main">
+        <div class="filtres">
+            <div class="filtre-1">
+                <p>Tipus:</p>
+                <select name="" id="tipus"></select>
+            </div>
+            <div class="filtre-2">
+                <p>Ordenació:</p>
+                <select name="" id="ordenacio"></select>
+            </div>
+        </div>
+        <div class="llista-llocs">
+
+        </div>
+        <div class="num-total"></div>
+        <div class="drop-zone">Arrossegar un fitxer CSV aquí per carregar la informació</div>
+    </div>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
+    <script src="./script/const.js"></script>
+    <script src="./script/Mapa.js"></script>
+    <script src="./script/index.js"></script>
+</body>
+</html>
