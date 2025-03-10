@@ -13,6 +13,8 @@ class Mapa {
             attribution: '© OpenStreetMap contributors'
         })
         tileLayer.addTo(this.#map);
+
+        L.marker(mapCenter).addTo(this.#map).bindPopup("Estàs aquí").openPopup();
     }
 
     mostrarPuntInicial(){
@@ -32,8 +34,8 @@ class Mapa {
     }
 
     #getPosicioActual(){
-        let lat = CURRENT_LAT;
-        let lng = CURRENT_LNG;
+        let lat = 1;
+        let lng = 1;
 
         // Verifica si la geolocalización está disponible en el navegador
         if (navigator.geolocation) {
