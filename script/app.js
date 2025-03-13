@@ -9,26 +9,30 @@ const mapa = new Mapa();
 
 // Prevenir comportament per defecte (obrir l'arxiu en una nova pestanya)
 ["dragenter", "dragover", "dragleave", "drop"].forEach(eventName => {
-    dropZone.addEventListener(eventName, function(event) {event.preventDefault()});
+    dropZone.addEventListener(eventName, function(event) {event.preventDefault();});
 });
 
 // Controlar el fitxer CSV arrossegat
-dropZone.addEventListener("drop", (event) => {
+dropZone.addEventListener("drop", function(event) {
     // Agafar el fitxer CSV arrossegat
     const files = event.dataTransfer.files;
-    console.log(files);
     loadFile(files);
-
-    if(files && files.length > 0) {
-        const file = files[0];
-        const extension = file.name.split(".")[-1]
-        console.log(extension);
-
-    }
 });
 
 const loadFile = function(files) {
-
+    // Comprovem que l'arxiu existeix
+    if(files && files.length > 0) {
+        const file = files[0];
+        // Agafem l'extensió del nom de l'arxiu
+        // Exemple: nom_arxiu.csv -> {0: nom_arxiu, 1: csv} (Separem pel ".")
+        const extension = file.name.split(".")[1];
+        if(extension.toLowerCase() === FILE_EXTENSION) { // Comprovem que l'usuari puja un csv
+            console.log("El fitxer té un format adequat.");
+            readCsv(file); // Llegim el fitxer csv
+        } else {
+            alert("El fitxer no té un format adequat.");
+        }
+    }
 }
 
 const readCsv = function (file) {
@@ -38,16 +42,17 @@ const readCsv = function (file) {
         fitxer = reader.result.trim().split("\n").slice(1);
         loadData(fitxer);
         getInfoCountry();
-    }
-    reader.onerror = (error) => {
-        
-    }
+    };
+    reader.onerror = () => {
+        showMessage("Error al carregar el fitxer");
+    };
+    console.log("El fitxer s'està carregant");
     reader.readAsText(file, "UTF-8");
-    console.log("");
 }
 
 const loadData = function (fitxer) {
-
+    let codiCountry;
+    console.log(fitxer);
     fitxer.forEach((liniaCSV) => {
         const dades = liniaCSV.split(CHAR_CSV);
         console.log(dades[TIPUS]);

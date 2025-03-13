@@ -1,6 +1,7 @@
 const CURRENT_LAT = 41.3851;
 const CURRENT_LNG = 2.1734;
 const FILE_EXTENSION = "csv";
+const CHAR_CSV = ";";
 
 const PAIS = 0;
 const CODI = 1;
