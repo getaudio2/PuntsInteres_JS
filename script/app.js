@@ -3,6 +3,7 @@ const dropZone = document.querySelector(".drop-zone");
 
 // VARIABLES
 let puntInteres = [];
+let numId = 0;
 
 // Nova instància de mapa
 const mapa = new Mapa();
@@ -38,13 +39,15 @@ const loadFile = function(files) {
 const readCsv = function (file) {
     // Llegir el fitxer
     const reader = new FileReader();
+    // Carreguem l'arxiu (asíncron)
     reader.onload = () => {
         fitxer = reader.result.trim().split("\n").slice(1);
         loadData(fitxer);
-        getInfoCountry();
+        //getInfoCountry();
     };
+    // Missatge d'error si el FileReader no aconsegueix carregar el fitxer csv
     reader.onerror = () => {
-        showMessage("Error al carregar el fitxer");
+        showMessage("Error al carregar el fitxer. Torna a intentar-ho", "error");
     };
     console.log("El fitxer s'està carregant");
     reader.readAsText(file, "UTF-8");
@@ -54,19 +57,19 @@ const loadData = function (fitxer) {
     let codiCountry;
     console.log(fitxer);
     fitxer.forEach((liniaCSV) => {
+        numId++;
         const dades = liniaCSV.split(CHAR_CSV);
-        console.log(dades[TIPUS]);
         switch(dades[TIPUS].toLowerCase()){
             case "espai":
-                const espaiObj = new PuntInteres(dades[PAIS],dades[CODI]);
+                const espaiObj = new PuntInteres(numId, dades[PAIS],dades[CIUTAT],dades[NOM],dades[DIRECCIO],dades[LAT],dades[LON],dades[PUNTUACIO],dades[TIPUS]);
                 puntInteres.push(espaiObj);
                 break;
             case "museu":
-                const museuObj = new Museu();
+                const museuObj = new Museu(numId, dades[PAIS],dades[CIUTAT],dades[NOM],dades[DIRECCIO],dades[LAT],dades[LON],dades[PUNTUACIO],dades[TIPUS],dades[HORARI],dades[PREU],dades[MONEDA],dades[DESCRIPCIO]);
                 puntInteres.push(museuObj);
                 break;
             case "atraccio":
-                const atraccioObj = new Atraccio();
+                const atraccioObj = new Atraccio(numId, dades[PAIS],dades[CIUTAT],dades[NOM],dades[DIRECCIO],dades[LAT],dades[LON],dades[PUNTUACIO],dades[TIPUS],dades[HORARI],dades[PREU],dades[MONEDA]);
                 puntInteres.push(atraccioObj);
                 break
             default:
@@ -75,6 +78,7 @@ const loadData = function (fitxer) {
                 });
         }
     });
+    console.log(puntInteres);
 }
 
 const getInfoCountry = async function(){
