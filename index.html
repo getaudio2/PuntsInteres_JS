@@ -11,18 +11,24 @@
 </head>
 <body>
     <div class="main">
-        <div class="filtres">
-            <div class="filtre-1">
-                <p>Tipus:</p>
-                <select name="" id="tipus"></select>
+        <div class="camps-filtres">
+            <div class="filtres">
+                <div class="filtre-1">
+                    <p>Tipus:</p>
+                    <select name="" id="tipus" class="filtre-tipus"></select>
+                </div>
+                <div class="filtre-2">
+                    <p>Ordenació:</p>
+                    <select name="" id="ordenacio" class="filtre-ordre">
+                        <option value="asc">Ascendent</option>
+                        <option value="desc">Descendent</option>
+                    </select>
+                </div>
             </div>
-            <div class="filtre-2">
-                <p>Ordenació:</p>
-                <select name="" id="ordenacio"></select>
-            </div>
+            <input class="textbox" type="text" id="nomlloc" name="nomlloc" placeholder="Filtrar per nom...">
         </div>
         <div class="llista-llocs">
-
+            No hi ha informació per mostrar
         </div>
         <div class="num-total"></div>
         <div class="drop-zone">Arrossegar un fitxer CSV aquí per carregar la informació</div>

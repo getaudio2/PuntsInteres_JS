@@ -1,8 +1,11 @@
 // HTML ELEMENTS
 const dropZone = document.querySelector(".drop-zone");
+const llistaLlocsDiv = document.querySelector(".llista-llocs");
+const tipusSelectedObj = document.querySelector(".filtre-tipus");
 
 // VARIABLES
 let puntInteres = [];
+let tipusSelected = new Set([]);
 let numId = 0;
 
 // Nova instància de mapa
@@ -55,7 +58,6 @@ const readCsv = function (file) {
 
 const loadData = function (fitxer) {
     let codiCountry;
-    console.log(fitxer);
     fitxer.forEach((liniaCSV) => {
         numId++;
         const dades = liniaCSV.split(CHAR_CSV);
@@ -74,11 +76,26 @@ const loadData = function (fitxer) {
                 break
             default:
                 throw new Error(() => {
-                    alert("")
+                    alert("No s'ha pogut carregar el tipus de punt d'interés")
                 });
         }
+        tipusSelected.add(dades[TIPUS]);
     });
-    console.log(puntInteres);
+    carregarTipusSelected();
+    renderitzarLlista(puntInteres);
+}
+
+const carregarTipusSelected = function() {
+    const option = document.createElement("option");
+    option.value = "Tots";
+    option.text = "Tots";
+    tipusSelectedObj.appendChild(option);
+    tipusSelected.forEach(tipus => {
+        const option = document.createElement("option");
+        option.value = tipus;
+        option.text = tipus;
+        tipusSelectedObj.appendChild(option);
+    });
 }
 
 const getInfoCountry = async function(){
@@ -89,18 +106,39 @@ const getInfoCountry = async function(){
 
 const pintarEspai = function(obj) {
     const espaiElement = document.createElement("div");
-    espaiElement.textContent = "" + obj;
+    const deleteBtn = document.createElement("button");
+    deleteBtn.classList.add("delBtn");
+    deleteBtn.textContent = "delete";
+    espaiElement.classList.add("espai");
+    espaiElement.textContent = "" + obj.nom;
+    espaiElement.appendChild(deleteBtn);
+    llistaLlocsDiv.appendChild(espaiElement);
 }
 
 const pintarMuseu = function(obj) {
-    
+    const museuElement = document.createElement("div");
+    const deleteBtn = document.createElement("button");
+    deleteBtn.classList.add("delBtn");
+    deleteBtn.textContent = "delete";
+    museuElement.classList.add("museu");
+    museuElement.textContent = "" + obj.nom;
+    museuElement.appendChild(deleteBtn);
+    llistaLlocsDiv.appendChild(museuElement);
 }
 
 const pintarAtraccio = function(obj) {
-    
+    const atraccioElement = document.createElement("div");
+    const deleteBtn = document.createElement("button");
+    deleteBtn.classList.add("delBtn");
+    deleteBtn.textContent = "delete";
+    atraccioElement.classList.add("atraccio");
+    atraccioElement.textContent = "" + obj.nom;
+    atraccioElement.appendChild(deleteBtn);
+    llistaLlocsDiv.appendChild(atraccioElement);
 }
 
 const renderitzarLlista = function (llista) {
+    llistaLlocsDiv.textContent = "";
     llista.forEach((obj) => {
         switch(obj.tipus.toLowerCase()){
             case "espai":

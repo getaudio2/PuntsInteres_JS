@@ -30,6 +30,39 @@ body {
     width: 20px;
 }
 
+.llista-llocs {
+    background-color: wheat;
+    padding: 5px;
+    margin: 5px;
+    border: 1px solid black;
+    border-radius: 5px;
+    height: 300px;
+    max-height: 300px;
+    overflow-y: auto;
+} 
+
+.museu {
+    background-color: orange;
+    display: flex;
+    justify-content: space-between;
+}
+.atraccio {
+    background-color: greenyellow;
+    display: flex;
+    justify-content: space-between;
+}
+.espai {
+    background-color: cyan;
+    display: flex;
+    justify-content: space-between;
+}
+
+.delBtn {
+    background-color: red;
+    color: white;
+    border-radius: 5px;
+}
+
 #map { 
     flex: 2;
     border-radius: 5px;
