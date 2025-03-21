@@ -1,10 +1,13 @@
 // HTML ELEMENTS
 const dropZone = document.querySelector(".drop-zone");
 const llistaLlocsDiv = document.querySelector(".llista-llocs");
-const tipusSelectedObj = document.querySelector(".filtre-tipus");
+const tipusFilterObj = document.querySelector(".filtre-tipus");
+const ordreFilterObj = document.querySelector(".filtre-ordre");
+const nameFilterObj = document.querySelector(".filtre-nom");
 
 // VARIABLES
 let puntInteres = [];
+let puntInteresCurrent = [];
 let tipusSelected = new Set([]);
 let numId = 0;
 
@@ -34,7 +37,7 @@ const loadFile = function(files) {
             console.log("El fitxer té un format adequat.");
             readCsv(file); // Llegim el fitxer csv
         } else {
-            alert("El fitxer no té un format adequat.");
+            alert("El fitxer no és format csv.");
         }
     }
 }
@@ -57,7 +60,6 @@ const readCsv = function (file) {
 }
 
 const loadData = function (fitxer) {
-    let codiCountry;
     fitxer.forEach((liniaCSV) => {
         numId++;
         const dades = liniaCSV.split(CHAR_CSV);
@@ -65,76 +67,70 @@ const loadData = function (fitxer) {
             case "espai":
                 const espaiObj = new PuntInteres(numId, dades[PAIS],dades[CIUTAT],dades[NOM],dades[DIRECCIO],dades[LAT],dades[LON],dades[PUNTUACIO],dades[TIPUS]);
                 puntInteres.push(espaiObj);
+                puntInteresCurrent.push(espaiObj);
                 break;
             case "museu":
                 const museuObj = new Museu(numId, dades[PAIS],dades[CIUTAT],dades[NOM],dades[DIRECCIO],dades[LAT],dades[LON],dades[PUNTUACIO],dades[TIPUS],dades[HORARI],dades[PREU],dades[MONEDA],dades[DESCRIPCIO]);
                 puntInteres.push(museuObj);
+                puntInteresCurrent.push(museuObj);
                 break;
             case "atraccio":
                 const atraccioObj = new Atraccio(numId, dades[PAIS],dades[CIUTAT],dades[NOM],dades[DIRECCIO],dades[LAT],dades[LON],dades[PUNTUACIO],dades[TIPUS],dades[HORARI],dades[PREU],dades[MONEDA]);
                 puntInteres.push(atraccioObj);
+                puntInteresCurrent.push(atraccioObj);
                 break
             default:
                 throw new Error(() => {
                     alert("No s'ha pogut carregar el tipus de punt d'interés")
                 });
         }
-        tipusSelected.add(dades[TIPUS]);
+        tipusSelected.add(dades[TIPUS]); // Guardem els tipus de punts d'interés dins del Set
     });
-    carregarTipusSelected();
-    renderitzarLlista(puntInteres);
+    carregarTipusSelected(); // Cridem a la funció per ficar els tipus al selected
+    renderitzarLlista(puntInteres); // Mostrem la llista de punts d'interés en forma de divs
 }
 
+// Popular el select amb els tipus de punt d'interès
 const carregarTipusSelected = function() {
-    const option = document.createElement("option");
-    option.value = "Tots";
+    const option = document.createElement("option"); // Crear element option
+    option.value = "Tots"; // Option per defecte
     option.text = "Tots";
-    tipusSelectedObj.appendChild(option);
+    tipusFilterObj.appendChild(option); // Afegir el option al select
     tipusSelected.forEach(tipus => {
-        const option = document.createElement("option");
-        option.value = tipus;
+        const option = document.createElement("option"); // Crear element option
+        option.value = tipus; // Option amb el tipus d'interés
         option.text = tipus;
-        tipusSelectedObj.appendChild(option);
+        tipusFilterObj.appendChild(option); // Afegir el option al select
     });
 }
 
-const getInfoCountry = async function(){
-    const resposta = await fetch();
-    const dada = await resposta.json();
-    console.log(dada);
+const pintarPuntInteres = function(nomTipus, nomPuntInteres) {
+    const puntElement = document.createElement("div");
+    const deleteBtn = document.createElement("button");
+    deleteBtn.classList.add("delBtn");
+    deleteBtn.textContent = "delete";
+    puntElement.classList.add(nomTipus);
+    puntElement.textContent = "" + nomPuntInteres;
+    puntElement.appendChild(deleteBtn);
+    llistaLlocsDiv.appendChild(puntElement);
 }
 
 const pintarEspai = function(obj) {
-    const espaiElement = document.createElement("div");
-    const deleteBtn = document.createElement("button");
-    deleteBtn.classList.add("delBtn");
-    deleteBtn.textContent = "delete";
-    espaiElement.classList.add("espai");
-    espaiElement.textContent = "" + obj.nom;
-    espaiElement.appendChild(deleteBtn);
-    llistaLlocsDiv.appendChild(espaiElement);
+    const nomTipus = obj.tipus.toLowerCase();
+    const nomEspai = obj.nom;
+    pintarPuntInteres(nomTipus, nomEspai);
 }
 
 const pintarMuseu = function(obj) {
-    const museuElement = document.createElement("div");
-    const deleteBtn = document.createElement("button");
-    deleteBtn.classList.add("delBtn");
-    deleteBtn.textContent = "delete";
-    museuElement.classList.add("museu");
-    museuElement.textContent = "" + obj.nom;
-    museuElement.appendChild(deleteBtn);
-    llistaLlocsDiv.appendChild(museuElement);
+    const nomTipus = obj.tipus.toLowerCase();
+    const nomMuseu = obj.nom;
+    pintarPuntInteres(nomTipus, nomMuseu);
 }
 
 const pintarAtraccio = function(obj) {
-    const atraccioElement = document.createElement("div");
-    const deleteBtn = document.createElement("button");
-    deleteBtn.classList.add("delBtn");
-    deleteBtn.textContent = "delete";
-    atraccioElement.classList.add("atraccio");
-    atraccioElement.textContent = "" + obj.nom;
-    atraccioElement.appendChild(deleteBtn);
-    llistaLlocsDiv.appendChild(atraccioElement);
+    const nomTipus = obj.tipus.toLowerCase();
+    const nomAtraccio = obj.nom;
+    pintarPuntInteres(nomTipus, nomAtraccio);
 }
 
 const renderitzarLlista = function (llista) {
@@ -150,6 +146,28 @@ const renderitzarLlista = function (llista) {
             case "atraccio":
                 pintarAtraccio(obj);
                 break;
+            default:
+                throw new Error(() => {
+                    alert("Has ficat un objecte incorrecte");
+                });
         }
     });
 }
+
+tipusFilterObj.addEventListener("change", function(event) {
+
+});
+
+const filtrarPerNom = function (text) {
+    const llistaFiltrada = puntInteresCurrent.filter((item) => {
+        item.nom.toLowerCase().includes(text.toLowerCase());
+    });
+    renderitzarLlista(llistaFiltrada);
+}
+
+nameFilterObj.addEventListener("input", function(event) {
+    text = event.target.value;
+    if(text.length > 3){
+        filtrarPerNom(text);
+    }
+});

@@ -38,17 +38,10 @@ class Mapa {
         let lng = 1;
 
         // Verifica si la geolocalización está disponible en el navegador
-        if (navigator.geolocation) {
+        if (!this.#currentLat && !this.#currentLng) {
             navigator.geolocation.getCurrentPosition(function (position) {
                 lat = position.coords.latitude;
                 lng = position.coords.longitude;
-
-                // Coloca un marcador en la ubicación actual del usuario
-                L.marker([lat, lng]).addTo(mapa)
-                    .bindPopup("Estàs aquí").openPopup();
-
-                // Centra el mapa en la ubicación actual
-                mapa.setView([lat, lng], 13);
             }, function (error) {
                 console.error("Error en la geolocalización:", error);
             });

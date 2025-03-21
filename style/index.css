@@ -13,6 +13,14 @@ body {
     border: 1px dashed black;
 }
 
+.camps-filtres {
+    background-color:antiquewhite;
+    margin: 5px;
+    padding: 5px;
+    border-radius: 5px;
+    height: 90px;
+}
+
 .filtres {
     display: flex;
 }
@@ -20,14 +28,16 @@ body {
 .filtres > div {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    border: 1px solid black;
     flex: 1;
 }
 
 .filtres > select {
-    width: 20px;
+    width: auto;
+}
+
+.filtre-nom {
+    width: 300px;
 }
 
 .llista-llocs {
@@ -61,6 +71,20 @@ body {
     background-color: red;
     color: white;
     border-radius: 5px;
+}
+
+.num-total-div {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.netejar-llista-btn {
+    background-color: red;
+    color: white;
+    border: 0;
+    border-radius: 5px;
+    height: 30px;
 }
 
 #map { 
