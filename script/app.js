@@ -86,6 +86,13 @@ const loadData = function (fitxer) {
         }
         tipusSelected.add(dades[TIPUS]); // Guardem els tipus de punts d'interés dins del Set
     });
+
+    if (puntInteresCurrent.length > 0) {
+        const primerPunt = puntInteresCurrent[0];
+        const lat = parseFloat(primerPunt.latitud);
+        const lon = parseFloat(primerPunt.longitud);
+        mapa.actualitzarPosInitMapa(lat, lon);
+    }
     carregarTipusSelected(); // Cridem a la funció per ficar els tipus al selected
     renderitzarLlista(puntInteres); // Mostrem la llista de punts d'interés en forma de divs
     mostrarPuntsAlMapa(puntInteres);
@@ -158,9 +165,13 @@ const renderitzarLlista = function (llista) {
         const delBtn = div.querySelector(".delBtn");
         if (delBtn) {
             delBtn.addEventListener("click", () => {
-                puntInteresCurrent = puntInteresCurrent.filter(p => p.id !== obj.id);
-                renderitzarLlista(puntInteresCurrent);
-                mostrarPuntsAlMapa(llistaFiltrada);
+                const confirmDelete = confirm("Segur que vols eliminar aquest punt?");
+                if (confirmDelete) {
+                    puntInteresCurrent = puntInteresCurrent.filter(p => p.id !== obj.id);
+                    renderitzarLlista(puntInteresCurrent);
+                    mapa.borrarPunt();
+                    mostrarPuntsAlMapa(puntInteresCurrent);
+                }
             });
         }
     });

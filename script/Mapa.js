@@ -23,7 +23,7 @@ class Mapa {
     }
 
     actualitzarPosInitMapa(lat, lon){
-
+        this.#map.setView([lat, lon], 13);
     }
 
     mostrarPunt(lat, long, desc){
