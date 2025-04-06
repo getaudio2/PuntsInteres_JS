@@ -284,4 +284,7 @@ const netejarLlista = function() {
     mapa.borrarPunt();
     renderitzarLlista(puntInteresCurrent);
 }
-clearListBtn.addEventListener("click", netejarLlista);
+clearListBtn.addEventListener("click", () => {
+    const confirmDelete = confirm("Segur que vols eliminar tota la llista? Hauràs de tornar a carregar l'arxiu csv!");
+    if(confirmDelete) netejarLlista();
+});
