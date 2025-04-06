@@ -88,6 +88,7 @@ const loadData = function (fitxer) {
     });
     carregarTipusSelected(); // Cridem a la funció per ficar els tipus al selected
     renderitzarLlista(puntInteres); // Mostrem la llista de punts d'interés en forma de divs
+    mostrarPuntsAlMapa(puntInteres);
 }
 
 // Popular el select amb els tipus de punt d'interès
@@ -159,6 +160,7 @@ const renderitzarLlista = function (llista) {
             delBtn.addEventListener("click", () => {
                 puntInteresCurrent = puntInteresCurrent.filter(p => p.id !== obj.id);
                 renderitzarLlista(puntInteresCurrent);
+                mostrarPuntsAlMapa(llistaFiltrada);
             });
         }
     });
@@ -171,6 +173,7 @@ tipusFilterObj.addEventListener("change", function(event) {
         ? puntInteresCurrent.filter(item => item.tipus === selectedType)
         : puntInteresCurrent;
     renderitzarLlista(llistaFiltrada);
+    mostrarPuntsAlMapa(llistaFiltrada);
 });
 
 const filtrarPerNom = function (text) {
@@ -178,6 +181,7 @@ const filtrarPerNom = function (text) {
         return item.nom.toLowerCase().includes(text.toLowerCase());
     });
     renderitzarLlista(llistaFiltrada);
+    mostrarPuntsAlMapa(llistaFiltrada);
 }
 
 nameFilterObj.addEventListener("input", function(event) {
@@ -186,6 +190,7 @@ nameFilterObj.addEventListener("input", function(event) {
         filtrarPerNom(text);
     } else {
         renderitzarLlista(puntInteresCurrent);
+        mostrarPuntsAlMapa(llistaFiltrada);
     }
 });
 
@@ -205,4 +210,12 @@ const ordenarPerNom = function(ordre) {
         }
     });
     renderitzarLlista(llistaOrdenada);
+    mostrarPuntsAlMapa(llistaFiltrada);
 };
+
+const mostrarPuntsAlMapa = function (llista) {
+    mapa.borrarPunt();
+    llista.forEach(item => {
+        mapa.mostrarPunt(parseFloat(item.latitud), parseFloat(item.longitud), item.nom);
+    });
+}

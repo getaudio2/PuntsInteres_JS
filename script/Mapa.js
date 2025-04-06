@@ -2,6 +2,7 @@ class Mapa {
     #map;
     #currentLat;
     #currentLng;
+    #markers = [];
 
     constructor(){
         this.#getPosicioActual();
@@ -26,11 +27,13 @@ class Mapa {
     }
 
     mostrarPunt(lat, long, desc){
-
+        const marker = L.marker([lat, long]).addTo(this.#map).bindPopup(desc);
+        this.#markers.push(marker);
     }
 
     borrarPunt() {
-
+        this.#markers.forEach(marker => this.#map.removeLayer(marker));
+        this.#markers = [];
     }
 
     #getPosicioActual(){
