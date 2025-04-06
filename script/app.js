@@ -13,6 +13,9 @@ let puntInteres = [];
 let puntInteresCurrent = [];
 let tipusSelected = new Set([]);
 let numId = 0;
+let currentNameFilter = "";
+let currentTypeFilter = "";
+let currentOrderFilter = "";
 
 // Nova instància de mapa
 const mapa = new Mapa();
@@ -204,48 +207,50 @@ const renderitzarLlista = function (llista) {
     actualitzarComptadorPuntsInteres(llista.length);
 }
 
-tipusFilterObj.addEventListener("change", function(event) {
-    const selectedType = event.target.value;
+// Funció per aplicar els filtres de tipus, nom y ordre al mateix temps
+const aplicarTotsElsFiltres = function() {
+    let resultats = [...puntInteresCurrent];
 
-    const llistaFiltrada = selectedType
-        ? puntInteresCurrent.filter(item => item.tipus === selectedType)
-        : puntInteresCurrent;
-    renderitzarLlista(llistaFiltrada);
+    // Filter per tipus de punt d'interés
+    if (currentTypeFilter) {
+        resultats = currentTypeFilter
+        ? resultats.filter(item => item.tipus === currentTypeFilter)
+        : resultats;
+    }
+
+    // Filter per nom
+    if (currentNameFilter.length > 3) {
+        resultats = resultats.filter(item => 
+            item.nom.toLowerCase().includes(currentNameFilter.toLowerCase())
+        );
+    }
+
+    // Filtre per ordre asc o desc
+    if (currentOrderFilter === "asc") {
+        resultats.sort((a, b) => a.nom.localeCompare(b.nom));
+    } else if (currentOrderFilter === "desc") {
+        resultats.sort((a, b) => b.nom.localeCompare(a.nom));
+    }
+
+    renderitzarLlista(resultats);
+};
+
+
+tipusFilterObj.addEventListener("change", function(event) {
+    currentTypeFilter = event.target.value;
+    aplicarTotsElsFiltres();
 });
 
-const filtrarPerNom = function (text) {
-    const llistaFiltrada = puntInteresCurrent.filter((item) => {
-        return item.nom.toLowerCase().includes(text.toLowerCase());
-    });
-    renderitzarLlista(llistaFiltrada);
-}
-
 nameFilterObj.addEventListener("input", function(event) {
-    text = event.target.value;
-    if(text.length > 3){
-        filtrarPerNom(text);
-    } else {
-        renderitzarLlista(puntInteresCurrent);
-    }
+    currentNameFilter = event.target.value;
+    aplicarTotsElsFiltres();
 });
 
 ordreFilterObj.addEventListener("change", function(event) {
-    const ordre = event.target.value;
-    ordenarPerNom(ordre);
+    currentOrderFilter = event.target.value;
+    aplicarTotsElsFiltres();
 });
 
-const ordenarPerNom = function(ordre) {
-    const llistaOrdenada = [...puntInteresCurrent].sort((a, b) => {
-        if (ordre === "asc") {
-            return a.nom.localeCompare(b.nom);
-        } else if (ordre === "desc") {
-            return b.nom.localeCompare(a.nom);
-        } else {
-            return 0;
-        }
-    });
-    renderitzarLlista(llistaOrdenada);
-};
 
 // Mostrar punts d'interés al mapa amb markers
 const mostrarPuntsAlMapa = function (llista) {
