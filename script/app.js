@@ -5,6 +5,8 @@ const tipusFilterObj = document.querySelector(".filtre-tipus");
 const ordreFilterObj = document.querySelector(".filtre-ordre");
 const nameFilterObj = document.querySelector(".filtre-nom");
 const infoCountryDiv = document.querySelector(".info-country");
+const clearListBtn = document.querySelector(".netejar-llista-btn");
+const puntsInteresComptadorLabel = document.querySelector(".num-total");
 
 // VARIABLES
 let puntInteres = [];
@@ -41,12 +43,9 @@ dropZone.addEventListener("drop", async function(event) {
 
                 // Actualiztem la posició del mapa al païs segons la lat i lng de restcountries
                 mapa.actualitzarPosInitMapa(countryInfo.lat, countryInfo.lng);
-                
-                // Mostrem la bandera del païs i nom de la ciutat
-                displayCountryInfo(countryInfo);
 
                 // Carreguem la info de l'arxiu csv com a llista de divs
-                loadData(fitxer);
+                loadData(fitxer, countryInfo);
             } catch (error) {
                 console.error(error);
                 alert("Error al carregar el fitxer. Torna a intentar-ho.");
@@ -90,7 +89,8 @@ const readCsv = function (file) {
     reader.readAsText(file, "UTF-8");
 }
 */
-const loadData = function (fitxer) {
+const loadData = function (fitxer, countryInfo) {
+    netejarLlista();
     fitxer.forEach((liniaCSV) => {
         numId++;
         const dades = liniaCSV.split(CHAR_CSV);
@@ -117,14 +117,14 @@ const loadData = function (fitxer) {
         }
         tipusSelected.add(dades[TIPUS]); // Guardem els tipus de punts d'interés dins del Set
     });
-
+    displayCountryInfo(countryInfo); // Mostrem la bandera del païs i nom de la ciutat
     carregarTipusSelected(); // Cridem a la funció per ficar els tipus al selected
     renderitzarLlista(puntInteres); // Mostrem la llista de punts d'interés en forma de divs
-    mostrarPuntsAlMapa(puntInteres); // Mostrem els punts d'interés al mapa amb markers
 }
 
 // Popular el select amb els tipus de punt d'interès
 const carregarTipusSelected = function() {
+    tipusFilterObj.innerHTML = "";
     const option = document.createElement("option"); // Crear element option
     option.value = ""; // Option per defecte
     option.text = "Tots";
@@ -200,6 +200,8 @@ const renderitzarLlista = function (llista) {
             });
         }
     });
+    mostrarPuntsAlMapa(llista); // Mostrem els punts d'interés al mapa amb markers
+    actualitzarComptadorPuntsInteres(llista.length);
 }
 
 tipusFilterObj.addEventListener("change", function(event) {
@@ -209,7 +211,6 @@ tipusFilterObj.addEventListener("change", function(event) {
         ? puntInteresCurrent.filter(item => item.tipus === selectedType)
         : puntInteresCurrent;
     renderitzarLlista(llistaFiltrada);
-    mostrarPuntsAlMapa(llistaFiltrada);
 });
 
 const filtrarPerNom = function (text) {
@@ -217,7 +218,6 @@ const filtrarPerNom = function (text) {
         return item.nom.toLowerCase().includes(text.toLowerCase());
     });
     renderitzarLlista(llistaFiltrada);
-    mostrarPuntsAlMapa(llistaFiltrada);
 }
 
 nameFilterObj.addEventListener("input", function(event) {
@@ -226,7 +226,6 @@ nameFilterObj.addEventListener("input", function(event) {
         filtrarPerNom(text);
     } else {
         renderitzarLlista(puntInteresCurrent);
-        mostrarPuntsAlMapa(llistaFiltrada);
     }
 });
 
@@ -246,7 +245,6 @@ const ordenarPerNom = function(ordre) {
         }
     });
     renderitzarLlista(llistaOrdenada);
-    mostrarPuntsAlMapa(llistaFiltrada);
 };
 
 // Mostrar punts d'interés al mapa amb markers
@@ -257,7 +255,7 @@ const mostrarPuntsAlMapa = function (llista) {
     });
 }
 
-function displayCountryInfo(countryInfo) {
+const displayCountryInfo = function (countryInfo) {
     const flagObj = document.createElement("p");
     const cityObj = document.createElement("p");
     flagObj.textContent = "País(" + countryInfo.flag + ")";
@@ -265,3 +263,20 @@ function displayCountryInfo(countryInfo) {
     infoCountryDiv.appendChild(flagObj);
     infoCountryDiv.appendChild(cityObj);
 }
+
+const actualitzarComptadorPuntsInteres = function (total) {
+    puntsInteresComptadorLabel.textContent = `Número total: ${total}`;
+}
+
+// Netejem tot: la llista de divs, els arrays,
+// els filtres que hem populat amb els tipus, el mapa i el div amb el pais i ciutat
+const netejarLlista = function() {
+    infoCountryDiv.innerHTML = "";
+    puntInteres = [];
+    puntInteresCurrent = [];
+    tipusFilterObj.innerHTML = "";
+    infoCountryDiv.innerHTML = "";
+    mapa.borrarPunt();
+    renderitzarLlista(puntInteresCurrent);
+}
+clearListBtn.addEventListener("click", netejarLlista);
