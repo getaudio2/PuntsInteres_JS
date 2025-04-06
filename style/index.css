@@ -1,0 +1,100 @@
+body {
+    display: flex;
+    gap: 8px;
+}
+.main {
+    flex: 1;
+    background: rgb(201, 201, 201);
+    border-radius: 5px;
+}
+
+.info-country {
+    display: flex;
+    justify-content: space-around;
+    font-size: 14px;
+}
+
+.drop-zone {
+    font-size: 20px;
+    border: 1px dashed black;
+}
+
+.camps-filtres {
+    background-color:antiquewhite;
+    margin: 5px;
+    padding: 5px;
+    border-radius: 5px;
+    height: 90px;
+}
+
+.filtres {
+    display: flex;
+}
+
+.filtres > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+}
+
+.filtres > select {
+    width: auto;
+}
+
+.filtre-nom {
+    width: 300px;
+}
+
+.llista-llocs {
+    background-color: wheat;
+    padding: 5px;
+    margin: 5px;
+    border: 1px solid black;
+    border-radius: 5px;
+    height: 300px;
+    max-height: 300px;
+    overflow-y: auto;
+} 
+
+.museu {
+    background-color: orange;
+    display: flex;
+    justify-content: space-between;
+}
+.atraccio {
+    background-color: greenyellow;
+    display: flex;
+    justify-content: space-between;
+}
+.espai {
+    background-color: cyan;
+    display: flex;
+    justify-content: space-between;
+}
+
+.delBtn {
+    background-color: red;
+    color: white;
+    border-radius: 5px;
+}
+
+.num-total-div {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.netejar-llista-btn {
+    background-color: red;
+    color: white;
+    border: 0;
+    border-radius: 5px;
+    height: 30px;
+}
+
+#map { 
+    flex: 2;
+    border-radius: 5px;
+    height: 100vh;
+}
