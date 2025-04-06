@@ -93,7 +93,7 @@ const loadData = function (fitxer) {
 // Popular el select amb els tipus de punt d'interès
 const carregarTipusSelected = function() {
     const option = document.createElement("option"); // Crear element option
-    option.value = "Tots"; // Option per defecte
+    option.value = ""; // Option per defecte
     option.text = "Tots";
     tipusFilterObj.appendChild(option); // Afegir el option al select
     tipusSelected.forEach(tipus => {
@@ -113,54 +113,69 @@ const pintarPuntInteres = function(nomTipus, nomPuntInteres) {
     puntElement.textContent = "" + nomPuntInteres;
     puntElement.appendChild(deleteBtn);
     llistaLlocsDiv.appendChild(puntElement);
+    return puntElement;
 }
 
 const pintarEspai = function(obj) {
     const nomTipus = obj.tipus.toLowerCase();
     const nomEspai = obj.nom;
-    pintarPuntInteres(nomTipus, nomEspai);
+    return pintarPuntInteres(nomTipus, nomEspai);
 }
 
 const pintarMuseu = function(obj) {
     const nomTipus = obj.tipus.toLowerCase();
     const nomMuseu = obj.nom;
-    pintarPuntInteres(nomTipus, nomMuseu);
+    return pintarPuntInteres(nomTipus, nomMuseu);
 }
 
 const pintarAtraccio = function(obj) {
     const nomTipus = obj.tipus.toLowerCase();
     const nomAtraccio = obj.nom;
-    pintarPuntInteres(nomTipus, nomAtraccio);
+    return pintarPuntInteres(nomTipus, nomAtraccio);
 }
 
 const renderitzarLlista = function (llista) {
     llistaLlocsDiv.textContent = "";
     llista.forEach((obj) => {
+        let div;
         switch(obj.tipus.toLowerCase()){
             case "espai":
-                pintarEspai(obj);
+                div = pintarEspai(obj);
                 break;
             case "museu":
-                pintarMuseu(obj);
+                div = pintarMuseu(obj);
                 break;
             case "atraccio":
-                pintarAtraccio(obj);
+                div = pintarAtraccio(obj);
                 break;
             default:
                 throw new Error(() => {
                     alert("Has ficat un objecte incorrecte");
                 });
         }
+
+        const delBtn = div.querySelector(".delBtn");
+        if (delBtn) {
+            delBtn.addEventListener("click", () => {
+                puntInteresCurrent = puntInteresCurrent.filter(p => p.id !== obj.id);
+                renderitzarLlista(puntInteresCurrent);
+            });
+        }
     });
 }
 
 tipusFilterObj.addEventListener("change", function(event) {
+    const selectedType = event.target.value;
 
+    const llistaFiltrada = selectedType
+        ? puntInteresCurrent.filter(item => item.tipus === selectedType)
+        : puntInteresCurrent;
+    renderitzarLlista(llistaFiltrada);
 });
 
 const filtrarPerNom = function (text) {
     const llistaFiltrada = puntInteresCurrent.filter((item) => {
-        item.nom.toLowerCase().includes(text.toLowerCase());
+        return item.nom.toLowerCase().includes(text.toLowerCase());
     });
     renderitzarLlista(llistaFiltrada);
 }
@@ -169,5 +184,25 @@ nameFilterObj.addEventListener("input", function(event) {
     text = event.target.value;
     if(text.length > 3){
         filtrarPerNom(text);
+    } else {
+        renderitzarLlista(puntInteresCurrent);
     }
 });
+
+ordreFilterObj.addEventListener("change", function(event) {
+    const ordre = event.target.value;
+    ordenarPerNom(ordre);
+});
+
+const ordenarPerNom = function(ordre) {
+    const llistaOrdenada = [...puntInteresCurrent].sort((a, b) => {
+        if (ordre === "asc") {
+            return a.nom.localeCompare(b.nom);
+        } else if (ordre === "desc") {
+            return b.nom.localeCompare(a.nom);
+        } else {
+            return 0;
+        }
+    });
+    renderitzarLlista(llistaOrdenada);
+};
