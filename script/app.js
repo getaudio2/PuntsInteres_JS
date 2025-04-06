@@ -4,6 +4,7 @@ const llistaLlocsDiv = document.querySelector(".llista-llocs");
 const tipusFilterObj = document.querySelector(".filtre-tipus");
 const ordreFilterObj = document.querySelector(".filtre-ordre");
 const nameFilterObj = document.querySelector(".filtre-nom");
+const infoCountryDiv = document.querySelector(".info-country");
 
 // VARIABLES
 let puntInteres = [];
@@ -20,12 +21,42 @@ const mapa = new Mapa();
 });
 
 // Controlar el fitxer CSV arrossegat
-dropZone.addEventListener("drop", function(event) {
+dropZone.addEventListener("drop", async function(event) {
     // Agafar el fitxer CSV arrossegat
     const files = event.dataTransfer.files;
-    loadFile(files);
-});
+    //loadFile(files);
+    if (files && files.length > 0) {
+        const file = files[0];
+        // Agafem l'extensió del nom de l'arxiu
+        // Exemple: nom_arxiu.csv -> {0: nom_arxiu, 1: csv} (Separem pel ".")
+        const extension = file.name.split(".")[1];
+        if(extension.toLowerCase() === FILE_EXTENSION) { // Comprovem que l'usuari puja un csv
+            console.log("El fitxer té un format adequat.");
+            // Llegim el fitxer csv
+            const csvReader = new CSVReader();
+            try {
+                // Llegim les rows del fitxer csv i l'info del païs amb restcountries
+                const fitxer = await csvReader.readCsv(file);
+                const countryInfo = await csvReader.getInfoCountry();
 
+                // Actualiztem la posició del mapa al païs segons la lat i lng de restcountries
+                mapa.actualitzarPosInitMapa(countryInfo.lat, countryInfo.lng);
+                
+                // Mostrem la bandera del païs i nom de la ciutat
+                displayCountryInfo(countryInfo);
+
+                // Carreguem la info de l'arxiu csv com a llista de divs
+                loadData(fitxer);
+            } catch (error) {
+                console.error(error);
+                alert("Error al carregar el fitxer. Torna a intentar-ho.");
+            }
+        } else {
+            alert("El fitxer no és format csv.");
+        }
+    }
+});
+/*
 const loadFile = function(files) {
     // Comprovem que l'arxiu existeix
     if(files && files.length > 0) {
@@ -58,7 +89,7 @@ const readCsv = function (file) {
     console.log("El fitxer s'està carregant");
     reader.readAsText(file, "UTF-8");
 }
-
+*/
 const loadData = function (fitxer) {
     fitxer.forEach((liniaCSV) => {
         numId++;
@@ -87,15 +118,9 @@ const loadData = function (fitxer) {
         tipusSelected.add(dades[TIPUS]); // Guardem els tipus de punts d'interés dins del Set
     });
 
-    if (puntInteresCurrent.length > 0) {
-        const primerPunt = puntInteresCurrent[0];
-        const lat = parseFloat(primerPunt.latitud);
-        const lon = parseFloat(primerPunt.longitud);
-        mapa.actualitzarPosInitMapa(lat, lon);
-    }
     carregarTipusSelected(); // Cridem a la funció per ficar els tipus al selected
     renderitzarLlista(puntInteres); // Mostrem la llista de punts d'interés en forma de divs
-    mostrarPuntsAlMapa(puntInteres);
+    mostrarPuntsAlMapa(puntInteres); // Mostrem els punts d'interés al mapa amb markers
 }
 
 // Popular el select amb els tipus de punt d'interès
@@ -224,9 +249,19 @@ const ordenarPerNom = function(ordre) {
     mostrarPuntsAlMapa(llistaFiltrada);
 };
 
+// Mostrar punts d'interés al mapa amb markers
 const mostrarPuntsAlMapa = function (llista) {
     mapa.borrarPunt();
     llista.forEach(item => {
         mapa.mostrarPunt(parseFloat(item.latitud), parseFloat(item.longitud), item.nom);
     });
+}
+
+function displayCountryInfo(countryInfo) {
+    const flagObj = document.createElement("p");
+    const cityObj = document.createElement("p");
+    flagObj.textContent = "País(" + countryInfo.flag + ")";
+    cityObj.textContent = countryInfo.city;
+    infoCountryDiv.appendChild(flagObj);
+    infoCountryDiv.appendChild(cityObj);
 }

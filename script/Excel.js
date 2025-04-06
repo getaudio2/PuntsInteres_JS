@@ -1,19 +1,17 @@
 class CSVReader {
     #rows;
 
-    constructor(rows){
-        this.#rows = rows;
-        this.readCsv();
-        this.getInfoCountry();
+    constructor(){
+        this.#rows = [];
     }
 
-    async readCsv() {
+    async readCsv(file) {
         return new Promise((resolve, reject)=>{
             const reader = new FileReader();
             reader.onload = () => {
                 //Tindre la informació del csv
-                fitxer = reader.result.trim().split("\n").slice(1);
-                resolve(fitxer);
+                this.#rows = reader.result.trim().split("\n").slice(1);
+                resolve(this.#rows);
             };
             reader.onerror = () => {
                 showMessage("Error reading the file. Please try again.", "error");

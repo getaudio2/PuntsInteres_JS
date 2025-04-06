@@ -8,6 +8,12 @@ body {
     border-radius: 5px;
 }
 
+.info-country {
+    display: flex;
+    justify-content: space-around;
+    font-size: 14px;
+}
+
 .drop-zone {
     font-size: 20px;
     border: 1px dashed black;
